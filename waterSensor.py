@@ -3,6 +3,7 @@ import requests
 import RPi.GPIO as GPIO
 import spidev
 import pyowm
+import os
 
 
 spi = spidev.SpiDev()
@@ -11,7 +12,7 @@ spi.max_speed_hz = 250000
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(15, GPIO.OUT)
-GPIO.output(15, GPIO.LOW)
+#GPIO.output(15, GPIO.LOW)
 garageOpen = False
 count = 0
 safe = True
@@ -22,6 +23,19 @@ booneWeather = w.get_weather()
 
 def getWeather():
     return booneWeather.get_status()
+
+def openGarage():
+    
+    os.system('gpio write 16 1')
+    sleep(.5)
+    os.system('gpio write 16 0')
+    sleep(1)
+    os.system('gpio write 16 1')
+    sleep(.5)
+    os.system('gpio write 16 0')
+    print('Garage is open')
+    #safe = False
+    return
 
 def poll_sensor(channel):
     assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
@@ -37,16 +51,10 @@ def poll_sensor(channel):
 try:
     
     while safe:
-        if count > 5:
-            GPIO.output(15, GPIO.HIGH)
-            garageOpen = True
-            sleep(.5)
-            GPIO.output(15, GPIO.LOW)
-            
-        if garageOpen:
-            print("Garage is Open")
-            sleep(5)
-            safe = False
+        #if garageOpen:
+         #   print("Garage is Open")
+          #  sleep(5)
+           # safe = False
         #GPIO.output(15, GPIO.LOW)
         channeldata = poll_sensor(1)
         #print(channeldata)
@@ -57,16 +65,20 @@ try:
             print('Weather says its raining')
             if voltage > 250:
                 #GPIO.output(15, GPIO.HIGH)
-                print(voltage)
+                #print(voltage)
                 print("The sensor has detected water.")
                 count = count + 1
-            else:
-                print(voltage)
+                if count > 5:
+                    openGarage()
+                    safe = False
+            else:print(voltage)
+        else:
+            print(voltage)
             
         sleep(1)
         
 finally:
     spi.close()
-    GPIO.cleanup()
+    #GPIO.cleanup()
     print ("\nThe Program has closed.") 
 
