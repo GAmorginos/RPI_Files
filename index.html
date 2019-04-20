@@ -1,0 +1,32 @@
+<!--
+-->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<html>
+	<head>
+		<title>Project Live Feed</title>
+	<head>
+	<body>
+		<center>
+		<img src ="http://amorginos.ddns.net/project/RPI_Cam_Web_Interface/www/cam_pic_new.php" width= "640" height = "480" alt = "centered image">
+		</center>
+	<body>
+		<center>
+		<form action='garageup.php' method="POST">
+			<input type = "submit" name="up" value="Garage Up">
+		</form>
+		<form action='garagedown.php' method="POST">
+			<input type = "submit" name="down" value="Garage Down">
+		</form>
+		<form action= 'initialize.php' method = "POST">
+			<input type = "submit" name = "init" value= "Initialize">
+		</form>
+		<form action = 'readpins.php' method = "POST">	
+			<input type = "submit"name = "read" value="Read Pins" >
+		</form>
+		<span "Use the 'Initialize' button if you have recently restarted machine.">
+		<form action = 'runSensor.php' method = "POST">	
+			<input type = "submit"name = "start" value="Start Sensor" >
+		</form>
+		</center>
+</html>
+
