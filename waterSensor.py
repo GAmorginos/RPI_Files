@@ -16,27 +16,31 @@ GPIO.setup(15, GPIO.OUT)
 garageOpen = False
 count = 0
 safe = True
-
+#key used by openweathermap to enable to retrieve weather data
 weatherObject = pyowm.OWM('6aedf1aa7d45610ac1e720360cf53274')
 w = weatherObject.weather_at_place('Boone,US')
 booneWeather = w.get_weather()
-
+#using openweathermap gets the current status of the weather 
+#in the Boone area
 def getWeather():
     return booneWeather.get_status()
-
+#this function opens the garage door a few inches, 
+#adjusting the sleep time will coorespond to the amount
+#the garage door will be open 
 def openGarage():
     
     os.system('gpio write 16 1')
-    sleep(.5)
     os.system('gpio write 16 0')
     sleep(1)
     os.system('gpio write 16 1')
-    sleep(.5)
     os.system('gpio write 16 0')
     print('Garage is open')
     #safe = False
     return
-
+#reads the signal comming from the ADC and returns a value that can be
+#read as the level of water the sensor is reading
+#channel 1 is the sensor, channel 0 is connected to a 10k ohm 
+#potentiometer used for testing
 def poll_sensor(channel):
     assert 0 <= channel <= 1, 'ADC channel must be 0 or 1.'
     cbyte = 0b11000000
@@ -51,11 +55,7 @@ def poll_sensor(channel):
 try:
     
     while safe:
-        #if garageOpen:
-         #   print("Garage is Open")
-          #  sleep(5)
-           # safe = False
-        #GPIO.output(15, GPIO.LOW)
+        #will get information from the sensor
         channeldata = poll_sensor(1)
         #print(channeldata)
         voltage = round(((channeldata * 3300) / 1024), 0)
@@ -73,7 +73,8 @@ try:
                     safe = False
             else:print(voltage)
         else:
-            print(voltage)
+            print("Weather calls for no rain.")
+	    print(voltage)
             
         sleep(1)
         
